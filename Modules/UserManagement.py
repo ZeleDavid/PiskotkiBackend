@@ -8,13 +8,21 @@ from functools import wraps
 
 USER_ID = u'ASnc71OP5BhmP7c5dTOfthLLzo42'
 
+PREFIX = 'Bearer '
+
+def get_token(header):
+    if not header.startswith(PREFIX):
+        raise ValueError('Invalid token')
+
+    return header[len(PREFIX):]
+
 def check_token(f):
     @wraps(f)
     def wrap(*args,**kwargs):
         if not request.headers.get('authorization'):
             return {'message': 'No token provided'},400
         try:
-            user = auth.verify_id_token(request.headers['authorization'])
+            user = auth.verify_id_token(get_token(request.headers['authorization']))
             request.user = user
         except:
             return {'message':'Invalid token provided.'},400
@@ -74,7 +82,6 @@ def setsettings(request):
     except:
         return {'message': 'Error saving user settings'}, 400
 
-    
 def signup(request):
     email = request.json.get('email')
     password = request.json.get('password')
@@ -89,7 +96,7 @@ def signup(request):
     except:
         return {'message': 'Error creating user'},400
         
-def token(request):
+def signin(request):
     email = request.json.get('email')
     password = request.json.get('password')
     try:
@@ -99,6 +106,7 @@ def token(request):
     except:
         return {'message': 'There was an error logging in'},400
 
+@check_token
 def signout():
     pb.auth().current_user = None
     return {'message': f'Successfully signed user out.'},200
