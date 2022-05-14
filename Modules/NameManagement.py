@@ -6,21 +6,9 @@ from firebase_admin import credentials, auth, firestore
 from flask import Flask, request
 from functools import wraps
 import random
+from Modules.UserManagement import check_token
 
 USER_ID = u'ASnc71OP5BhmP7c5dTOfthLLzo42'
-
-def check_token(f):
-    @wraps(f)
-    def wrap(*args,**kwargs):
-        if not request.headers.get('authorization'):
-            return {'message': 'No token provided'},400
-        try:
-            user = auth.verify_id_token(request.headers['authorization'])
-            request.user = user
-        except:
-            return {'message':'Invalid token provided.'},400
-        return f(*args, **kwargs)
-    return wrap
 
 pb = pyrebase.initialize_app(json.load(open('fbconfig.json')))
 
