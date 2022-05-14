@@ -6,7 +6,7 @@ from firebase_admin import credentials, auth, firestore
 from flask import Flask, request
 from functools import wraps
 
-USER_ID = "ASnc71OP5BhmP7c5dTOfthLLzo42"
+USER_ID = u'ASnc71OP5BhmP7c5dTOfthLLzo42'
 
 def check_token(f):
     @wraps(f)
@@ -20,8 +20,6 @@ def check_token(f):
             return {'message':'Invalid token provided.'},400
         return f(*args, **kwargs)
     return wrap
-
-USER_ID = 1
 
 #Connect to firebase
 cred = credentials.Certificate('fbAdminConfig.json')
@@ -37,25 +35,15 @@ def userinfo():
 @check_token
 def getsettings():
     db = firestore.client()
-    print("serbus")
-
-    #doc_ref = db.collection(u'settings').where(u'user_ID', u'==', USER_ID).stream()
-    doc_ref = db.collection(u'name').document(u'00035jrZrofOvixxDvHu')
-
+    doc_ref = db.collection(u'settings').document(USER_ID)
     doc = doc_ref.get()
+    
     if doc.exists:
-        print(doc_ref.get().to_dict())
+        print(doc.to_dict())
     else:
-        print("serbus")
         return {'message': 'No settings found'}, 400
-    #if len(list(doc_ref)) != 1:
-    #    return {'message': 'Error when fetching settings'},400
 
-    #for doc in doc_ref:
-    #    print(doc.to_dict())
-    #    return {doc.to_dict()},200
-
-    return doc_ref.get().to_dict(),200
+    return doc.to_dict(), 200
 
 @check_token
 def setsettings(request):
