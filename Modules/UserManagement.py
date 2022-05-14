@@ -58,18 +58,34 @@ def setsettings(request):
     try:
         first_character = request.json.get('first_character')
         last_character = request.json.get('last_character')
-        length_min = request.json.get('length_min')
-        length_max = request.json.get('length_max')
+
+        length_short = request.json.get('length_short')
+        length_medium = request.json.get('length_medium')
+        length_long = request.json.get('length_long')
+
+        style_modern = request.json.get('style_modern')
+        style_classic = request.json.get('style_classic')
+
+        name_father = request.json.get('name_father')
+        name_mother = request.json.get('name_mother')
+
+        sibling_names = request.json.get('sibling_names')
+
         gender = request.json.get('gender')
 
-        if first_character is None or last_character is None or length_min is None or length_max is None or gender is None:
+        if first_character is None or last_character is None or length is None or gender is None:
             return {'message': 'Missing some arguments'}, 400
 
         data = {
             u'first_character': first_character,
-            u'las_character': last_character,
-            u'length_min': length_min,
-            u'length_max': length_max,
+            u'last_character': last_character,
+            u'length_short': length_short,
+            u'length_medium': length_medium,
+            u'length_long': length_long,
+            u'style_modern': style_modern,
+            u'style_classic': style_classic,
+            u'name_father': name_father,
+            u'name_mother': name_mother,
             u'gender': gender
         }
 
