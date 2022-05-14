@@ -44,6 +44,8 @@ def userinfo():
 def getsettings():
     db = firestore.client()
     doc_ref = db.collection(u'settings').document(USER_ID)
+    print("db "+db.current_user.id)
+    print("pb "+pb.current_user.id)
     doc = doc_ref.get()
 
     if doc.exists:
