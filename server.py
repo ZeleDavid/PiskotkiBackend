@@ -4,10 +4,14 @@ import Modules.UserManagement as UserManagement
 import Modules.NameManagement as NameManagement
 import random
 from firebase_admin import firestore
+from flask_cors import CORS, cross_origin
 
 USER_ID = "ASnc71OP5BhmP7c5dTOfthLLzo42"
 
 app = Flask(__name__)
+
+cors = CORS(app)
+app.config['CORS_HEADERS'] = 'Content-Type'
 
 @app.route("/")
 def hello_world():
