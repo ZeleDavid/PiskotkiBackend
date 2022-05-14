@@ -107,3 +107,25 @@ def purgeNameActions():
         doc.reference.delete()
 
     return {'message': 'Success'}, 200
+
+def suggestName():
+    db = firestore.client()
+
+    used_names = set()
+    actions = db.collection(u'action').where(u'user_ID', u'==', USER_ID).stream()
+    for doc in actions:
+        used_names.add(doc.to_dict()['name_ID'])
+
+    names_stream = db.collection(u'name').stream()
+
+    names = set()
+    name_key = dict()
+
+    for doc in names_stream:
+        if(len(names) > 100): break
+        if doc.id not in used_names:
+            names.add(doc.to_dict()['name'])
+            name_key[doc.to_dict()['name']] = doc.id
+
+    name = random.choice(list(names))
+    return {'name_ID': name_key[name] , 'name': name}

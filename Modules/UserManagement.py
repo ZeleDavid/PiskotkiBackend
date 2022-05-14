@@ -118,6 +118,7 @@ def signin(request):
     try:
         user = pb.auth().sign_in_with_email_and_password(email, password)
         jwt = user['idToken']
+        print(user['localId'])
         return {'token': jwt}, 200
     except:
         return {'message': 'There was an error logging in'},400
