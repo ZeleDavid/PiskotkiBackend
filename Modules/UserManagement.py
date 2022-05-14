@@ -73,7 +73,7 @@ def setsettings(request):
 
         gender = request.json.get('gender')
 
-        if first_character is None or last_character is None or length is None or gender is None:
+        if first_character is None or last_character is None or length_short is None or length_medium is None or length_long is None or style_classic is None or style_modern is None or name_father is None or name_mother is None or gender is None:
             return {'message': 'Missing some arguments'}, 400
 
         data = {
