@@ -7,8 +7,7 @@ from flask import Flask, request
 from functools import wraps
 import random
 from Modules.UserManagement import check_token
-
-USER_ID = u'ASnc71OP5BhmP7c5dTOfthLLzo42'
+from Modules.Utils import getUserID
 
 pb = pyrebase.initialize_app(json.load(open('fbconfig.json')))
 
@@ -18,7 +17,7 @@ def getrandomname():
     db = firestore.client()
 
     used_names = set()
-    actions = db.collection(u'action').where(u'user_ID', u'==', USER_ID).stream()
+    actions = db.collection(u'action').where(u'user_ID', u'==', getUserID()).stream()
     for doc in actions:
         used_names.add(doc.to_dict()['name_ID'])
 
@@ -54,7 +53,7 @@ def postNameAction(request):
         db = firestore.client()
         doc_ref = db.collection(u'action').document()
         doc_ref.set({
-            u'user_ID': USER_ID,
+            u'user_ID': getUserID(),
             u'name_ID': name,
             u'action': action,
             u'timestamp': firestore.SERVER_TIMESTAMP
@@ -68,7 +67,7 @@ def postNameAction(request):
 def getNameActions():
     db = firestore.client()
 
-    actions = db.collection(u'action').where(u'user_ID', u'==', USER_ID).stream()
+    actions = db.collection(u'action').where(u'user_ID', u'==', getUserID()).stream()
 
     return_actions = []
 
@@ -90,7 +89,7 @@ def deleteNameAction(request):
         return {'message': 'Missing some arguments'}, 400
     try:
         db = firestore.client()
-        doc_ref = db.collection(u'action').where(u'user_ID', u'==', USER_ID).where(u'name_ID', u'==', name).stream()
+        doc_ref = db.collection(u'action').where(u'user_ID', u'==', getUserID()).where(u'name_ID', u'==', name).stream()
         for doc in doc_ref:
             doc.reference.delete()
         return {'message': 'Success'}, 200
@@ -101,7 +100,7 @@ def deleteNameAction(request):
 def purgeNameActions():
     db = firestore.client()
 
-    actions = db.collection(u'action').where(u'user_ID', u'==', USER_ID).stream()
+    actions = db.collection(u'action').where(u'user_ID', u'==', getUserID()).stream()
 
     for doc in actions:
         doc.reference.delete()

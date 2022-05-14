@@ -6,7 +6,7 @@ from firebase_admin import credentials, auth, firestore
 from flask import Flask, request
 from functools import wraps
 
-USER_ID = u'ASnc71OP5BhmP7c5dTOfthLLzo42'
+from Modules.Utils import getUserID, setUserID
 
 PREFIX = 'Bearer '
 
@@ -43,9 +43,7 @@ def userinfo():
 @check_token
 def getsettings():
     db = firestore.client()
-    doc_ref = db.collection(u'settings').document(USER_ID)
-    print("db "+db.current_user.id)
-    print("pb "+pb.current_user.id)
+    doc_ref = db.collection(u'settings').document(getUserID())
     doc = doc_ref.get()
 
     if doc.exists:
@@ -93,7 +91,7 @@ def setsettings(request):
 
         db = firestore.client()
 
-        doc_ref = db.collection(u'settings').document(USER_ID)
+        doc_ref = db.collection(u'settings').document(getUserID())
         doc_ref.set(data)
 
         return {'message': 'succesfully saved user settings'}, 200
@@ -120,6 +118,7 @@ def signin(request):
     try:
         user = pb.auth().sign_in_with_email_and_password(email, password)
         jwt = user['idToken']
+        setUserID(user['localId'])
         return {'token': jwt}, 200
     except:
         return {'message': 'There was an error logging in'},400
