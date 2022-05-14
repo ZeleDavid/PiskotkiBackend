@@ -37,7 +37,7 @@ def getsettings():
     db = firestore.client()
     doc_ref = db.collection(u'settings').document(USER_ID)
     doc = doc_ref.get()
-    
+
     if doc.exists:
         print(doc.to_dict())
     else:
@@ -49,20 +49,17 @@ def getsettings():
 def setsettings(request):
     try:
         first_character = request.form.get('first_character')
+        last_character = request.form.get('last_character')
         length_min = request.form.get('length_min')
         length_max = request.form.get('length_max')
         gender = request.form.get('gender')
 
-        print(first_character)
-        print(length_min)
-        print(length_max)
-        print(gender)
-
-        if first_character is None or length_min is None or length_max is None or gender is None:
+        if first_character is None or last_character is None or length_min is None or length_max is None or gender is None:
             return {'message': 'Missing some arguments'}, 400
 
         data = {
             u'first_character': first_character,
+            u'las_character': last_character,
             u'length_min': length_min,
             u'length_max': length_max,
             u'gender': gender
@@ -79,8 +76,8 @@ def setsettings(request):
 
     
 def signup(request):
-    email = request.body.get('email')
-    password = request.body.get('password')
+    email = request.json.get('email')
+    password = request.json.get('password')
     if email is None or password is None:
         return {'message': 'Error missing email or password'},400
     try:
@@ -93,8 +90,8 @@ def signup(request):
         return {'message': 'Error creating user'},400
         
 def token(request):
-    email = request.body.get('email')
-    password = request.body.get('password')
+    email = request.json.get('email')
+    password = request.json.get('password')
     try:
         user = pb.auth().sign_in_with_email_and_password(email, password)
         jwt = user['idToken']
