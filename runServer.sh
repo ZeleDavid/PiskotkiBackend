@@ -11,6 +11,8 @@ pip install -r requirements.txt
 
 sleep 1m
 
+kill -9 $(ps -A | grep python | awk '{print $1}')
+
 export FLASK_APP=server.py
 export FLASK_ENV=development
 flask run
