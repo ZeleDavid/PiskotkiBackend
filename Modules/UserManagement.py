@@ -79,8 +79,8 @@ def setsettings(request):
 
     
 def signup(request):
-    email = request.form.get('email')
-    password = request.form.get('password')
+    email = request.body.get('email')
+    password = request.body.get('password')
     if email is None or password is None:
         return {'message': 'Error missing email or password'},400
     try:
@@ -93,8 +93,8 @@ def signup(request):
         return {'message': 'Error creating user'},400
         
 def token(request):
-    email = request.form.get('email')
-    password = request.form.get('password')
+    email = request.body.get('email')
+    password = request.body.get('password')
     try:
         user = pb.auth().sign_in_with_email_and_password(email, password)
         jwt = user['idToken']
