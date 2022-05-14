@@ -9,8 +9,8 @@ pip install -r requirements.txt
 
 #bash /WAIT /B "Flask backend"
 
-set FLASK_APP=server.py
-set FLASK_ENV=development
+FLASK_APP=server.py
+FLASK_ENV=development
 flask run
 
 fi
