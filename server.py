@@ -71,17 +71,17 @@ def settings():
         return UserManagement.setsettings(request)
     return "Settings"
 
-@app.route('/signup',methods = ['POST', 'GET'])
+@app.route('/signup',methods = ['POST'])
 def signup():
     with app.app_context():
         return UserManagement.signup(request)
     return "Sign up"
 
-@app.route('/token',methods = ['POST', 'GET'])
-def token():
+@app.route('/signin',methods = ['POST'])
+def signin():
     with app.app_context():
-        return UserManagement.token(request)
-    return "Token"
+        return UserManagement.signin(request)
+    return "Sign in"
 
 @app.route('/signout')
 def signout():
