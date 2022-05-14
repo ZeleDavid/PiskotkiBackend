@@ -1,0 +1,1 @@
+cmd /k best_env\Scripts\activate
