@@ -4,6 +4,7 @@ import Modules.UserManagement as UserManagement
 import random
 from firebase_admin import firestore
 
+USER_ID = "ASnc71OP5BhmP7c5dTOfthLLzo42"
 
 app = Flask(__name__)
 
@@ -22,12 +23,10 @@ def returnNextName():
 @app.route('/getRandomName')
 def returnRandomName():
     with app.app_context():
-        managedData = Utils.getData();
-
         db = firestore.client()
 
         used_names = set()
-        actions = db.collection(u'action').where(u'user_ID', u'==', 1).stream()
+        actions = db.collection(u'action').where(u'user_ID', u'==', USER_ID).stream()
         for doc in actions:
             used_names.add(doc.to_dict()['name_ID'])
 
@@ -49,6 +48,18 @@ def userinfo():
         return UserManagement.userinfo()
     return "User info"
 
+@app.route('/settings', methods = ['GET'])
+def getsettings():
+    with app.app_context():
+        return UserManagement.getsettings()
+    return "Settings"
+
+@app.route('/settings', methods = ['POST'])
+def settings():
+    with app.app_context():
+        return UserManagement.setsettings(request)
+    return "Settings"
+
 @app.route('/signup',methods = ['POST', 'GET'])
 def signup():
     with app.app_context():
@@ -67,5 +78,5 @@ def signout():
         return UserManagement.signout()
     return "Sign out"
 
-if __name__ == '__main__':
-    app.run(debug=True)
+if name == 'main':
+    app.run(debug=True, port=0)
