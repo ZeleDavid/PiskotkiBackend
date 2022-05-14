@@ -22,9 +22,6 @@ def check_token(f):
         return f(*args, **kwargs)
     return wrap
 
-#Connect to firebase
-cred = credentials.Certificate('fbAdminConfig.json')
-firebase = firebase_admin.initialize_app(cred)
 pb = pyrebase.initialize_app(json.load(open('fbconfig.json')))
 
 
