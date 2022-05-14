@@ -8,10 +8,10 @@ bash v_env\Scripts\activate
 pip install -r requirements.txt
 
 #bash /WAIT /B "Flask backend"
-sleep 2m
+sleep 1m
 
-FLASK_APP=server.py
-FLASK_ENV=development
+set FLASK_APP=server.py
+set FLASK_ENV=development
 flask run
 
 fi
