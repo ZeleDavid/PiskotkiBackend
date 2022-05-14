@@ -23,8 +23,6 @@ def check_token(f):
     return wrap
 
 #Connect to firebase
-cred = credentials.Certificate('fbAdminConfig.json')
-firebase = firebase_admin.initialize_app(cred)
 pb = pyrebase.initialize_app(json.load(open('fbconfig.json')))
 
 
@@ -40,13 +38,19 @@ def getrandomname():
     names_stream = db.collection(u'name').stream()
 
     names = set()
+    name_key = dict()
 
     for doc in names_stream:
         if(len(names) > 100): break
         if doc.id not in used_names:
             names.add(doc.to_dict()['name'])
+            name_key[doc.to_dict()['name']] = doc.id
     
-    return random.sample(names, 1)[0]
+    if len(names) == 0:
+        return {'message': 'No names left'}, 400
+
+    name = random.choice(list(names))
+    return {'name_ID': name_key[name] , 'name': name}
 
 
 @check_token
