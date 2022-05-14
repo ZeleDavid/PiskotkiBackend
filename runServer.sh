@@ -11,8 +11,8 @@ pip install -r requirements.txt
 
 sleep 1m
 
-set FLASK_APP=server.py
-set FLASK_ENV=development
+export FLASK_APP=server.py
+export FLASK_ENV=development
 flask run
 
 fi
