@@ -16,3 +16,4 @@ statsmodels==0.13.2
 firebase-admin==5.2.0
 pycryptodome==3.14.1
 pyrebase4
+gunicorn
