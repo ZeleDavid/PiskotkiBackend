@@ -56,11 +56,11 @@ def getsettings():
 @check_token
 def setsettings(request):
     try:
-        first_character = request.form.get('first_character')
-        last_character = request.form.get('last_character')
-        length_min = request.form.get('length_min')
-        length_max = request.form.get('length_max')
-        gender = request.form.get('gender')
+        first_character = request.json.get('first_character')
+        last_character = request.json.get('last_character')
+        length_min = request.json.get('length_min')
+        length_max = request.json.get('length_max')
+        gender = request.json.get('gender')
 
         if first_character is None or last_character is None or length_min is None or length_max is None or gender is None:
             return {'message': 'Missing some arguments'}, 400

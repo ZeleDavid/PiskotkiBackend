@@ -55,8 +55,8 @@ def getrandomname():
 @check_token
 def postNameAction(request):
     try:
-        name = request.form.get('name')
-        action = request.form.get('action')
+        name = request.json.get('name')
+        action = request.json.get('action')
     except:
         return {'message': 'Missing some arguments'}, 400
 
@@ -93,8 +93,8 @@ def getNameActions():
 @check_token
 def deleteNameAction(request):
     try:
-        name = request.form.get('name')
-        action = request.form.get('action')
+        name = request.json.get('name')
+        action = request.json.get('action')
     except:
         return {'message': 'Missing some arguments'}, 400
 
