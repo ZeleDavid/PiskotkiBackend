@@ -78,5 +78,5 @@ def signout():
         return UserManagement.signout()
     return "Sign out"
 
-if name == 'main':
+if __name__ == 'main':
     app.run(debug=True, port=0)

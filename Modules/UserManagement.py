@@ -40,7 +40,7 @@ def getsettings():
     print("serbus")
 
     #doc_ref = db.collection(u'settings').where(u'user_ID', u'==', USER_ID).stream()
-    doc_ref = db.collection(u'names').document(u'00035jrZrofOvixxDvHu')
+    doc_ref = db.collection(u'name').document(u'00035jrZrofOvixxDvHu')
 
     doc = doc_ref.get()
     if doc.exists:
