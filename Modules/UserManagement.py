@@ -122,7 +122,13 @@ def signin():
     try:
         user = pb.auth().sign_in_with_email_and_password(email, password)
         jwt = user['idToken']
-        return {'token': jwt}, 200
+        
+        db = firestore.client()
+        decoded = jwt.decode(get_token(request.headers['authorization']), options={"verify_signature": False})
+
+        gender = db.collection(u'settings').document(decoded["user_id"]).get().to_dict()["gender"]
+
+        return {'token': jwt, 'gender': gender}, 200
     except:
         return {'message': 'There was an error logging in'},400
 
