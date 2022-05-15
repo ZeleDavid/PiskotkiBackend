@@ -58,7 +58,6 @@ def postNameAction():
             u'user_ID': getUserID(get_token(request.headers['authorization'])),
             u'name_ID': name,
             u'action': action,
-            u'timestamp': firestore.SERVER_TIMESTAMP
         })
         return {'message': 'Success'}, 200
     except:
