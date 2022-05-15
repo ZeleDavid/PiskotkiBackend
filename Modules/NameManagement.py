@@ -7,6 +7,9 @@ from flask import Flask, request
 from functools import wraps
 import random
 from Modules.UserManagement import check_token
+from Modules.NameProcessing import getSimilarNames
+
+USER_ID = u'ASnc71OP5BhmP7c5dTOfthLLzo42'
 from Modules.Utils import getUserID
 
 pb = pyrebase.initialize_app(json.load(open('fbconfig.json')))
@@ -107,7 +110,8 @@ def purgeNameActions():
 
     return {'message': 'Success'}, 200
 
-def suggestName():
+@check_token
+def suggestNameBasedOnOthers():
     db = firestore.client()
 
     used_names = set()
@@ -118,13 +122,20 @@ def suggestName():
     names_stream = db.collection(u'name').stream()
 
     names = set()
-    name_key = dict()
+
+    doc_ref = db.collection(u'settings').document(USER_ID)
+    docr = doc_ref.get()
+    if docr.exists:
+        docrr = docr.to_dict()
+
+    name_father = docrr['name_father']
+    name_mother = docrr['name_mother']
 
     for doc in names_stream:
         if(len(names) > 100): break
         if doc.id not in used_names:
             names.add(doc.to_dict()['name'])
-            name_key[doc.to_dict()['name']] = doc.id
+    
+    name = getSimilarNames(list(names),name_father,name_mother)
 
-    name = random.choice(list(names))
-    return {'name_ID': name_key[name] , 'name': name}
+    return {'name': name}

@@ -29,6 +29,12 @@ def returnRandomName():
         return NameManagement.getrandomname()
     return "Random name"
 
+@app.route('/suggestNameBasedOnOthers')
+def suggestNameBasedOnOthers():
+    with app.app_context():
+        return NameManagement.suggestNameBasedOnOthers()
+    return "Suggested name"
+
 @app.route('/nameAction', methods=['POST'])
 def postNameAction(request):
     with app.app_context():
