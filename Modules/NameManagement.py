@@ -21,6 +21,7 @@ def getrandomname():
     used_names = set()
     print(get_token(request.headers['authorization']))
     decoded = jwt.decode(get_token(request.headers['authorization']), options={"verify_signature": False})
+
     actions = db.collection(u'action').where(u'user_ID', u'==', decoded["user_id"]).stream()
     for doc in actions:
         used_names.add(doc.to_dict()['name_ID'])
@@ -30,9 +31,11 @@ def getrandomname():
     names = set()
     name_key = dict()
 
+    gender = db.collection(u'settings').document(decoded["user_id"])["gender"]
+
     for doc in names_stream:
         if(len(names) > 100): break
-        if doc.id not in used_names:
+        if doc.id not in used_names and doc.to_dict()['gender'] == gender:
             names.add(doc.to_dict()['name'])
             name_key[doc.to_dict()['name']] = doc.id
     
