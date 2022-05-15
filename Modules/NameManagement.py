@@ -160,6 +160,8 @@ def suggestNameBasedOnOthers():
 
     names = set()
 
+    gender = db.collection(u'settings').document(decoded["user_id"]).get().to_dict()["gender"]
+
     doc_ref = db.collection(u'settings').document(decoded["user_id"])
     docr = doc_ref.get()
     if docr.exists:
@@ -169,7 +171,7 @@ def suggestNameBasedOnOthers():
     
     for doc in names_stream:
         if(len(names) > 100): break
-        if doc.id not in used_names:
+        if doc.id not in used_names and doc.to_dict()['gender']:
             names.add(doc.to_dict()['name'])
     
     chance = random.randint(1,100)
@@ -191,10 +193,12 @@ def suggestNameBasedOnOthers():
 
             names = set()
             name_key = dict()
+            
+            gender = db.collection(u'settings').document(decoded["user_id"]).get().to_dict()["gender"]
 
             for doc in names_stream:
                 if(len(names) > 100): break
-                if doc.id not in used_names:
+                if doc.id not in used_names and doc.to_dict()['gender'] == gender:
                     names.add(doc.to_dict()['name'])
                     name_key[doc.to_dict()['name']] = doc.id
             
