@@ -16,7 +16,7 @@ pb = pyrebase.initialize_app(json.load(open('fbconfig.json')))
 
 
 @check_token
-def getrandomname(request):
+def getrandomname():
     db = firestore.client()
 
     used_names = set()

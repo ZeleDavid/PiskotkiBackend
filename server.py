@@ -16,47 +16,47 @@ def hello_world():
     return "<p>Hello, World!</p>"
 
 @app.route('/getNextName')
-def returnNextName(request):
+def returnNextName():
     with app.app_context():
-        managedData = Utils.getData(request)
+        managedData = Utils.getData()
         #TO DO: algoritem, ki ti vrne najprimernejše ime
         
     return "Izpis naslednjega imena"
 
 @app.route('/getRandomName')
-def returnRandomName(request):
+def returnRandomName():
     with app.app_context():
-        return NameManagement.getrandomname(request)
+        return NameManagement.getrandomname()
     return "Random name"
 
 @app.route('/suggestNameBasedOnOthers')
-def suggestNameBasedOnOthers(request):
+def suggestNameBasedOnOthers():
     with app.app_context():
-        return NameManagement.suggestNameBasedOnOthers(request)
+        return NameManagement.suggestNameBasedOnOthers()
     return "Suggested name"
 
 @app.route('/nameAction', methods=['POST'])
-def postNameAction(request):
+def postNameAction():
     with app.app_context():
-        return NameManagement.postNameAction(request)
+        return NameManagement.postNameAction()
     return "Name action"
 
 @app.route('/nameAction', methods=['GET'])
-def getNameAction(request):
+def getNameAction():
     with app.app_context():
-        return NameManagement.getNameActions(request)
+        return NameManagement.getNameActions()
     return "Name action"
 
 @app.route('/nameAction' , methods=['DELETE'])
-def deleteNameAction(request):
+def deleteNameAction():
     with app.app_context():
-        return NameManagement.deleteNameAction(request)
+        return NameManagement.deleteNameAction()
     return "Name action"
 
 @app.route('/nameAction', methods=['PURGE'])
-def purgeNameAction(request):
+def purgeNameAction():
     with app.app_context():
-        return NameManagement.purgeNameActions(request)
+        return NameManagement.purgeNameActions()
     return "Name action"
 
 @app.route('/')
@@ -68,27 +68,27 @@ def userinfo():
     return "User info"
 
 @app.route('/settings', methods = ['GET'])
-def getsettings(request):
+def getsettings():
     with app.app_context():
-        return UserManagement.getsettings(request)
+        return UserManagement.getsettings()
     return "Settings"
 
 @app.route('/settings', methods = ['POST'])
-def settings(request):
+def settings():
     with app.app_context():
-        return UserManagement.setsettings(request)
+        return UserManagement.setsettings()
     return "Settings"
 
 @app.route('/signup',methods = ['POST'])
 def signup():
     with app.app_context():
-        return UserManagement.signup(request)
+        return UserManagement.signup()
     return "Sign up"
 
 @app.route('/signin',methods = ['POST'])
 def signin():
     with app.app_context():
-        return UserManagement.signin(request)
+        return UserManagement.signin()
     return "Sign in"
 
 @app.route('/signout')
