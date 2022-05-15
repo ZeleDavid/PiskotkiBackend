@@ -13,7 +13,9 @@ app.config['CORS_HEADERS'] = 'Content-Type'
 
 @app.route("/")
 def hello_world():
-    return "<p>Hello, World!</p>"
+    with app.app_context():
+        return UserManagement.signin()
+    return "Sign in"
 
 @app.route('/getNextName')
 def returnNextName():
