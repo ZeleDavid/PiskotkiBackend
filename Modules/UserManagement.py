@@ -46,7 +46,9 @@ def getsettings():
     db = firestore.client()
     #doc_ref = db.collection(u'settings').document(getUserID(get_token(request.headers['authorization'])))
     decoded = jwt.decode(get_token(request.headers['authorization']), options={"verify_signature": False})
-    doc_ref = db.collection(u'settings').document(decoded.user_id)
+    print(decoded)
+    doc_ref = db.collection(u'settings').document(decoded["user_id"])
+
     doc = doc_ref.get()
 
     if doc.exists:
