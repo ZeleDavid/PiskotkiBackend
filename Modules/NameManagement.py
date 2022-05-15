@@ -204,9 +204,9 @@ def suggestNameBasedOnOthers():
                 return {'message': 'No names left'}, 400
 
             name = random.choice(list(names))
-            return {'name_ID': name_key[name] , 'name': name}
+            return {'name_ID': name_key[name] , 'name': name.capitalize()}
 
-    return {'name': name}
+    return {'name': name.capitalize()}
 
 def getPreferencesBasedOnHistory(decoded):
     db = firestore.client()
@@ -217,7 +217,7 @@ def getPreferencesBasedOnHistory(decoded):
     temp_dict = []
     for doc in actions:
         temp_dict = doc.to_dict()
-        temp_dict['name'] = db.collection('name').where(u'kid', u'==', True).document(temp_dict['name_ID']).get().to_dict()['name']
+        temp_dict['name'] = db.collection('name').where(u'kid', u'==', True).stream()
     
     likedKid = len(temp_dict)
 
@@ -226,7 +226,7 @@ def getPreferencesBasedOnHistory(decoded):
 
     for doc in actions:
         temp_dict = doc.to_dict()
-        temp_dict['name'] = db.collection('name').where(u'kid', u'==', True).document(temp_dict['name_ID']).get().to_dict()['name']
+        temp_dict['name'] = db.collection('name').where(u'kid', u'==', True).stream()
     
     dislikedKid = len(temp_dict)
 
@@ -235,7 +235,7 @@ def getPreferencesBasedOnHistory(decoded):
 
     for doc in actions:
         temp_dict = doc.to_dict()
-        temp_dict['name'] = db.collection('name').where(u'kid', u'==', True).document(temp_dict['name_ID']).get().to_dict()['name']
+        temp_dict['name'] = db.collection('name').where(u'kid', u'==', True).stream()
     
     superlikedKid = len(temp_dict)
 
@@ -244,7 +244,7 @@ def getPreferencesBasedOnHistory(decoded):
 
     for doc in actions:
         temp_dict = doc.to_dict()
-        temp_dict['name'] = db.collection('name').where(u'kid', u'==', False).document(temp_dict['name_ID']).get().to_dict()['name']
+        temp_dict['name'] = db.collection('name').where(u'kid', u'==', False).stream()
     
     likedAdult = len(temp_dict)
 
@@ -253,7 +253,7 @@ def getPreferencesBasedOnHistory(decoded):
 
     for doc in actions:
         temp_dict = doc.to_dict()
-        temp_dict['name'] = db.collection('name').where(u'kid', u'==', False).document(temp_dict['name_ID']).get().to_dict()['name']
+        temp_dict['name'] = db.collection('name').where(u'kid', u'==', False).stream()
     
     dislikedAdult = len(temp_dict)
 
@@ -262,7 +262,7 @@ def getPreferencesBasedOnHistory(decoded):
 
     for doc in actions:
         temp_dict = doc.to_dict()
-        temp_dict['name'] = db.collection('name').where(u'kid', u'==', False).document(temp_dict['name_ID']).get().to_dict()['name']
+        temp_dict['name'] = db.collection('name').where(u'kid', u'==', False).stream()
     
     superlikedAdult = len(temp_dict)
 
@@ -332,5 +332,5 @@ def getPreferencesBasedOnHistory(decoded):
 
     if(len(list(names))>0):
         name = random.choice(list(names))
-        return {'name_ID': name_key[name] , 'name': name}
+        return {'name_ID': name_key[name] , 'name': name.capitalize()}
     else: return ""
