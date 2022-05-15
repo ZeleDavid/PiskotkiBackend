@@ -64,9 +64,6 @@ def statistics():
     with app.app_context():
         return NameManagement.getStatistics()
     return "Statistics"
-
-
-@app.route('/')
     
 @app.route('/userinfo')
 def userinfo():
