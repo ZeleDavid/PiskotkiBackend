@@ -7,6 +7,7 @@ from flask import Flask, request
 from functools import wraps
 
 from Modules.Utils import getUserID, setUserID
+import jwt
 
 PREFIX = 'Bearer '
 
@@ -43,7 +44,9 @@ def userinfo():
 @check_token
 def getsettings():
     db = firestore.client()
-    doc_ref = db.collection(u'settings').document(getUserID(get_token(request.headers['authorization'])))
+    #doc_ref = db.collection(u'settings').document(getUserID(get_token(request.headers['authorization'])))
+    decoded = jwt.decode(get_token(request.headers['authorization']), options={"verify_signature": False})
+    doc_ref = db.collection(u'settings').document(decoded.user_id)
     doc = doc_ref.get()
 
     if doc.exists:

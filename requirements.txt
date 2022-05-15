@@ -19,3 +19,4 @@ pyrebase4
 nltk
 gunicorn
 flask_cors
+PyJWT
