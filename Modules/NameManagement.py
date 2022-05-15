@@ -10,6 +10,7 @@ from Modules.UserManagement import check_token, get_token
 from Modules.NameProcessing import getSimilarNames
 from Modules.NameProcessing import getNames
 import jwt
+import math
 
 pb = pyrebase.initialize_app(json.load(open('fbconfig.json')))
 
@@ -133,11 +134,17 @@ def getStatistics():
     stream = db.collection('name_all').where(u'year', u'==', year).stream()
 
     for doc in stream:
-        if doc['gender']:
-            men.append({1})
+        if not math.isnan(doc['count']):
+            if doc['gender']:
+                men.append([doc['name_ID'], doc['count']])
+            else:
+                women.append([doc['name_ID'], doc['count']])
+
+    men = reversed(men.sort(key = lambda x: x[1]))
+    women = reversed(women.sort(key = lambda x: x[1]))
 
 
-    return {'message': 'Not implemented'}, 400
+    return {'men': men, 'women': women}, 200
 
 @check_token
 def suggestNameBasedOnOthers():
