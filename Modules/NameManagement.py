@@ -111,7 +111,7 @@ def suggestName():
     db = firestore.client()
 
     used_names = set()
-    actions = db.collection(u'action').where(u'user_ID', u'==', USER_ID).stream()
+    actions = db.collection(u'action').where(u'user_ID', u'==', getUserID()).stream()
     for doc in actions:
         used_names.add(doc.to_dict()['name_ID'])
 

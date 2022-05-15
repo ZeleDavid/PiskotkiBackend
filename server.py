@@ -6,14 +6,6 @@ import random
 from firebase_admin import firestore
 from flask_cors import CORS, cross_origin
 
-USER_ID = None
-
-def setUserID(user_id):
-    USER_ID = user_id
-
-def getUserID():
-    return USER_ID
-
 app = Flask(__name__)
 
 cors = CORS(app)

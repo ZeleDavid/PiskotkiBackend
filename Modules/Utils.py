@@ -3,6 +3,7 @@
 USER_ID = None
 
 def setUserID(user_id):
+    global USER_ID
     USER_ID = user_id
 
 def getUserID():
