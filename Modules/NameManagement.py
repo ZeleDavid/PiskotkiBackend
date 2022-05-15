@@ -131,20 +131,20 @@ def getStatistics():
     men = []
     women = []
 
-    stream = db.collection('name_all').where(u'year', u'==', year).stream()
+    stream = db.collection('name_all').where(u'year', u'==', year).order_by('count', direction=firestore.Query.DESCENDING).limit(100).stream()
 
     for doc in stream:
-        if not math.isnan(doc['count']):
-            if doc['gender']:
-                men.append([doc['name_ID'], doc['count']])
-            else:
-                women.append([doc['name_ID'], doc['count']])
+        data = []
 
-    men = reversed(men.sort(key = lambda x: x[1]))
-    women = reversed(women.sort(key = lambda x: x[1]))
+        name = db.collection('name').document(doc.id).get().to_dict()['name']
+
+        data.append(name)
+        data.append(doc.to_dict()['count'])
+
+        men.append(data)
 
 
-    return {'men': men, 'women': women}, 200
+    return {'men': men, 'women': men}, 200
 
 @check_token
 def suggestNameBasedOnOthers():
