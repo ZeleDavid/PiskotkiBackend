@@ -90,7 +90,7 @@ def getNameActions():
 @check_token
 def deleteNameAction():
     try:
-        name = request.params['name'];
+        name = request.args.get('name');
     except:
         return {'message': 'Missing some arguments'}, 400
 
@@ -133,7 +133,8 @@ def getStatistics():
     stream = db.collection('name_all').where(u'year', u'==', year).stream()
 
     for doc in stream:
-        break
+        if doc['gender']:
+            men.append({1})
 
 
     return {'message': 'Not implemented'}, 400
