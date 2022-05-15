@@ -53,7 +53,7 @@ def getsettings():
         out = doc.to_dict()
         out['sibling_names'] = ",".join(out['sibling_names'])
 
-        print(doc.to_dict())
+        print(out)
     else:
         return {'message': 'No settings found'}, 400
 
