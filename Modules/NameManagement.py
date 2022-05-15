@@ -8,6 +8,7 @@ from functools import wraps
 import random
 from Modules.UserManagement import check_token
 from Modules.NameProcessing import getSimilarNames
+from Modules.NameProcessing import getNames
 
 USER_ID = u'ASnc71OP5BhmP7c5dTOfthLLzo42'
 from Modules.Utils import getUserID
@@ -137,5 +138,7 @@ def suggestNameBasedOnOthers():
             names.add(doc.to_dict()['name'])
     
     name = getSimilarNames(list(names),name_father,name_mother)
+    if name == "":
+        name = getNames(list(names),name_father,name_mother)
 
     return {'name': name}
