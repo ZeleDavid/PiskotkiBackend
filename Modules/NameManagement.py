@@ -31,7 +31,7 @@ def getrandomname():
     names = set()
     name_key = dict()
 
-    gender = db.collection(u'settings').document(decoded["user_id"])["gender"]
+    gender = db.collection(u'settings').document(decoded["user_id"]).get().to_dict()["gender"]
 
     for doc in names_stream:
         if(len(names) > 100): break
