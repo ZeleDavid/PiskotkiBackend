@@ -41,7 +41,7 @@ def userinfo():
     return {'data': users}, 200
 
 @check_token
-def getsettings(request):
+def getsettings():
     db = firestore.client()
     doc_ref = db.collection(u'settings').document(getUserID(get_token(request.headers['authorization'])))
     doc = doc_ref.get()
@@ -54,7 +54,7 @@ def getsettings(request):
     return doc.to_dict(), 200
 
 @check_token
-def setsettings(request):
+def setsettings():
     try:
         first_character = request.json.get('first_character')
         last_character = request.json.get('last_character')
@@ -98,7 +98,7 @@ def setsettings(request):
     except:
         return {'message': 'Error saving user settings'}, 400
 
-def signup(request):
+def signup():
     email = request.json.get('email')
     password = request.json.get('password')
     if email is None or password is None:
@@ -112,7 +112,7 @@ def signup(request):
     except:
         return {'message': 'Error creating user'},400
         
-def signin(request):
+def signin():
     email = request.json.get('email')
     password = request.json.get('password')
     try:

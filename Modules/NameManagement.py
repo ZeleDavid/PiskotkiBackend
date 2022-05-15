@@ -9,7 +9,6 @@ import random
 from Modules.UserManagement import check_token, get_token
 from Modules.NameProcessing import getSimilarNames
 
-USER_ID = u'ASnc71OP5BhmP7c5dTOfthLLzo42'
 from Modules.Utils import getUserID
 
 pb = pyrebase.initialize_app(json.load(open('fbconfig.json')))
@@ -43,7 +42,7 @@ def getrandomname():
 
 
 @check_token
-def postNameAction(request):
+def postNameAction():
     try:
         name = request.json.get('name')
         action = request.json.get('action')
@@ -67,7 +66,7 @@ def postNameAction(request):
 
 
 @check_token
-def getNameActions(request):
+def getNameActions():
     db = firestore.client()
 
     actions = db.collection(u'action').where(u'user_ID', u'==', getUserID(get_token(request.headers['authorization']))).stream()
@@ -81,7 +80,7 @@ def getNameActions(request):
 
 
 @check_token
-def deleteNameAction(request):
+def deleteNameAction():
     try:
         name = request.json.get('name')
         action = request.json.get('action')
@@ -100,7 +99,7 @@ def deleteNameAction(request):
         return {'message': 'Something went wrong'}, 400
 
 @check_token
-def purgeNameActions(request):
+def purgeNameActions():
     db = firestore.client()
 
     actions = db.collection(u'action').where(u'user_ID', u'==', getUserID(get_token(request.headers['authorization']))).stream()
@@ -111,7 +110,7 @@ def purgeNameActions(request):
     return {'message': 'Success'}, 200
 
 @check_token
-def suggestNameBasedOnOthers(request):
+def suggestNameBasedOnOthers():
     db = firestore.client()
 
     used_names = set()
