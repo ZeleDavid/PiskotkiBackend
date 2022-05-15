@@ -43,7 +43,7 @@ def userinfo():
 @check_token
 def getsettings():
     db = firestore.client()
-    doc_ref = db.collection(u'settings').document(getUserID())
+    doc_ref = db.collection(u'settings').document(getUserID(get_token(request.headers['authorization'])))
     doc = doc_ref.get()
 
     if doc.exists:
@@ -54,7 +54,7 @@ def getsettings():
     return doc.to_dict(), 200
 
 @check_token
-def setsettings(request):
+def setsettings():
     try:
         first_character = request.json.get('first_character')
         last_character = request.json.get('last_character')
@@ -91,14 +91,14 @@ def setsettings(request):
 
         db = firestore.client()
 
-        doc_ref = db.collection(u'settings').document(getUserID())
+        doc_ref = db.collection(u'settings').document(getUserID(get_token(request.headers['authorization'])))
         doc_ref.set(data)
 
         return {'message': 'succesfully saved user settings'}, 200
     except:
         return {'message': 'Error saving user settings'}, 400
 
-def signup(request):
+def signup():
     email = request.json.get('email')
     password = request.json.get('password')
     if email is None or password is None:
@@ -112,13 +112,13 @@ def signup(request):
     except:
         return {'message': 'Error creating user'},400
         
-def signin(request):
+def signin():
     email = request.json.get('email')
     password = request.json.get('password')
     try:
         user = pb.auth().sign_in_with_email_and_password(email, password)
         jwt = user['idToken']
-        setUserID(user['localId'])
+        setUserID(jwt, user['localId'])
         return {'token': jwt}, 200
     except:
         return {'message': 'There was an error logging in'},400

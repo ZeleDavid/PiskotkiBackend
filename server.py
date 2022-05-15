@@ -6,14 +6,6 @@ import random
 from firebase_admin import firestore
 from flask_cors import CORS, cross_origin
 
-USER_ID = None
-
-def setUserID(user_id):
-    USER_ID = user_id
-
-def getUserID():
-    return USER_ID
-
 app = Flask(__name__)
 
 cors = CORS(app)
@@ -44,27 +36,27 @@ def suggestNameBasedOnOthers():
     return "Suggested name"
 
 @app.route('/nameAction', methods=['POST'])
-def postNameAction(request):
+def postNameAction():
     with app.app_context():
-        return NameManagement.postNameAction(request)
+        return NameManagement.postNameAction()
     return "Name action"
 
 @app.route('/nameAction', methods=['GET'])
-def getNameAction(request):
+def getNameAction():
     with app.app_context():
-        return NameManagement.getNameActions(request)
+        return NameManagement.getNameActions()
     return "Name action"
 
 @app.route('/nameAction' , methods=['DELETE'])
-def deleteNameAction(request):
+def deleteNameAction():
     with app.app_context():
-        return NameManagement.deleteNameAction(request)
+        return NameManagement.deleteNameAction()
     return "Name action"
 
 @app.route('/nameAction', methods=['PURGE'])
-def purgeNameAction(request):
+def purgeNameAction():
     with app.app_context():
-        return NameManagement.purgeNameActions(request)
+        return NameManagement.purgeNameActions()
     return "Name action"
 
 @app.route('/')
@@ -84,19 +76,19 @@ def getsettings():
 @app.route('/settings', methods = ['POST'])
 def settings():
     with app.app_context():
-        return UserManagement.setsettings(request)
+        return UserManagement.setsettings()
     return "Settings"
 
 @app.route('/signup',methods = ['POST'])
 def signup():
     with app.app_context():
-        return UserManagement.signup(request)
+        return UserManagement.signup()
     return "Sign up"
 
 @app.route('/signin',methods = ['POST'])
 def signin():
     with app.app_context():
-        return UserManagement.signin(request)
+        return UserManagement.signin()
     return "Sign in"
 
 @app.route('/signout')
