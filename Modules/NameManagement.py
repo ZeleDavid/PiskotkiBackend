@@ -90,11 +90,11 @@ def getNameActions():
 @check_token
 def deleteNameAction():
     try:
-        name = request.json.get('name')
+        name = request.params['name'];
     except:
         return {'message': 'Missing some arguments'}, 400
 
-    if name is None or action is None:
+    if name is None:
         return {'message': 'Missing some arguments'}, 400
     try:
         db = firestore.client()
