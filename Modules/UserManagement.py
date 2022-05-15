@@ -6,7 +6,6 @@ from firebase_admin import credentials, auth, firestore
 from flask import Flask, request
 from functools import wraps
 
-from Modules.Utils import getUserID, setUserID
 import jwt
 
 PREFIX = 'Bearer '
