@@ -20,6 +20,7 @@ def getrandomname():
     db = firestore.client()
 
     used_names = set()
+    print(get_token(request.headers['authorization']))
     actions = db.collection(u'action').where(u'user_ID', u'==', getUserID(get_token(request.headers['authorization']))).stream()
     for doc in actions:
         used_names.add(doc.to_dict()['name_ID'])
