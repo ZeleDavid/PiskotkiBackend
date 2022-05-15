@@ -29,7 +29,7 @@ def returnRandomName():
         return NameManagement.getrandomname()
     return "Random name"
 
-@app.route('/suggestNameBasedOnOthers')
+@app.route('/getSuggestedName')
 def suggestNameBasedOnOthers():
     with app.app_context():
         return NameManagement.suggestNameBasedOnOthers()

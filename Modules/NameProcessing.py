@@ -12,26 +12,15 @@ nltk.download('wordnet')
 nltk.download('omw-1.4')
 nltk.download('punkt')
 
-def getNames(names,name_father,name_mother):
+def getNames(names):
     try:
-        #df = pd.DataFrame({'name':names})
         df = pd.DataFrame(names, columns=['name'])
-        #print(df.iloc[:, 0])
-
-        #return ''
-        #tokeni = word_tokenize(df.loc[['name']].values[0][0])
+        
         tokeni = word_tokenize(df.iloc[:, 0].values[0])
         tokeni = [beseda.lower() for beseda in tokeni]
 
-        #stop_list = stopwords.words('slovene') + list(string.punctuation)
-
-        #tokeni_brez_stop = [token for token in tokeni if token not in stop_list]
-
-        #tokeni_frekvenca_brez_stop = FreqDist(tokeni_brez_stop)
-
         stemmer = PorterStemmer()
 
-        #tokeni_stemm = [stemmer.stem(beseda) for beseda in tokeni_brez_stop]
         tokeni_stemm = [stemmer.stem(beseda) for beseda in tokeni]
 
         tokeni_frekvenca_stem = FreqDist(tokeni_stemm)
