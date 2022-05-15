@@ -50,6 +50,9 @@ def getsettings():
     doc = doc_ref.get()
 
     if doc.exists:
+        out = doc.to_dict()
+        out['sibling_names'] = ",".join(out['sibling_names'])
+
         print(doc.to_dict())
     else:
         return {'message': 'No settings found'}, 400
@@ -73,10 +76,11 @@ def setsettings():
         name_mother = request.json.get('name_mother')
 
         sibling_names = request.json.get('sibling_names')
+        sibling_names = sibling_names.strip().split(",")
 
         gender = request.json.get('gender')
 
-        if first_character is None or last_character is None or length_short is None or length_medium is None or length_long is None or style_classic is None or style_modern is None or name_father is None or name_mother is None or gender is None:
+        if first_character is None or last_character is None or length_short is None or length_medium is None or length_long is None or style_classic is None or style_modern is None or name_father is None or name_mother is None or sibling_names is None or gender is None:
             return {'message': 'Missing some arguments'}, 400
 
         data = {
@@ -89,7 +93,8 @@ def setsettings():
             u'style_classic': style_classic,
             u'name_father': name_father,
             u'name_mother': name_mother,
-            u'gender': gender
+            u'gender': gender,
+            u'sibling_names': sibling_names
         }
 
         db = firestore.client()
