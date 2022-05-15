@@ -130,22 +130,175 @@ def suggestNameBasedOnOthers():
 
     names = set()
 
-    decoded = jwt.decode(get_token(request.headers['authorization']), options={"verify_signature": False})
     doc_ref = db.collection(u'settings').document(decoded["user_id"])
     docr = doc_ref.get()
     if docr.exists:
         docrr = docr.to_dict()
-
-    name_father = docrr['name_father']
-    name_mother = docrr['name_mother']
-
+        name_father = docrr['name_father']
+        name_mother = docrr['name_mother']
+    
     for doc in names_stream:
         if(len(names) > 100): break
         if doc.id not in used_names:
             names.add(doc.to_dict()['name'])
     
-    name = getSimilarNames(list(names),name_father,name_mother)
+    chance = random.randint(1,100)
+    name = ""
+    if (chance <=50) and docr.exists:
+        name = getSimilarNames(list(names),name_father,name_mother)
     if name == "":
-        name = getNames(list(names),name_father,name_mother)
+        name = getPreferencesBasedOnHistory(decoded)
+        if name == "" and len(getNames(list(names))[0])>0:
+            name = getNames(list(names))[0]
+        #if not chosen by algorithm, choose randomly
+        else:
+            used_names = set()
+            actions = db.collection(u'action').where(u'user_ID', u'==', decoded["user_id"]).stream()
+            for doc in actions:
+                used_names.add(doc.to_dict()['name_ID'])
+
+            names_stream = db.collection(u'name').stream()
+
+            names = set()
+            name_key = dict()
+
+            for doc in names_stream:
+                if(len(names) > 100): break
+                if doc.id not in used_names:
+                    names.add(doc.to_dict()['name'])
+                    name_key[doc.to_dict()['name']] = doc.id
+            
+            if len(names) == 0:
+                return {'message': 'No names left'}, 400
+
+            name = random.choice(list(names))
+            return {'name_ID': name_key[name] , 'name': name}
 
     return {'name': name}
+
+def getPreferencesBasedOnHistory(decoded):
+    db = firestore.client()
+
+    #Liked kid
+    actions = db.collection(u'action').where(u'user_ID', u'==', decoded["user_id"]).where(u'action', u'==', "like").stream()
+
+    temp_dict = []
+    for doc in actions:
+        temp_dict = doc.to_dict()
+        temp_dict['name'] = db.collection('name').where(u'kid', u'==', True).document(temp_dict['name_ID']).get().to_dict()['name']
+    
+    likedKid = len(temp_dict)
+
+    #Disliked kid
+    actions = db.collection(u'action').where(u'user_ID', u'==', decoded["user_id"]).where(u'action', u'==', "dislike").stream()
+
+    for doc in actions:
+        temp_dict = doc.to_dict()
+        temp_dict['name'] = db.collection('name').where(u'kid', u'==', True).document(temp_dict['name_ID']).get().to_dict()['name']
+    
+    dislikedKid = len(temp_dict)
+
+    #Superliked kid
+    actions = db.collection(u'action').where(u'user_ID', u'==', decoded["user_id"]).where(u'action', u'==', "superlike").stream()
+
+    for doc in actions:
+        temp_dict = doc.to_dict()
+        temp_dict['name'] = db.collection('name').where(u'kid', u'==', True).document(temp_dict['name_ID']).get().to_dict()['name']
+    
+    superlikedKid = len(temp_dict)
+
+    #Liked adult
+    actions = db.collection(u'action').where(u'user_ID', u'==', decoded["user_id"]).where(u'action', u'==', "like").stream()
+
+    for doc in actions:
+        temp_dict = doc.to_dict()
+        temp_dict['name'] = db.collection('name').where(u'kid', u'==', False).document(temp_dict['name_ID']).get().to_dict()['name']
+    
+    likedAdult = len(temp_dict)
+
+    #Disliked adult
+    actions = db.collection(u'action').where(u'user_ID', u'==', decoded["user_id"]).where(u'action', u'==', "dislike").stream()
+
+    for doc in actions:
+        temp_dict = doc.to_dict()
+        temp_dict['name'] = db.collection('name').where(u'kid', u'==', False).document(temp_dict['name_ID']).get().to_dict()['name']
+    
+    dislikedAdult = len(temp_dict)
+
+    #Superliked adult
+    actions = db.collection(u'action').where(u'user_ID', u'==', decoded["user_id"]).where(u'action', u'==', "superlike").stream()
+
+    for doc in actions:
+        temp_dict = doc.to_dict()
+        temp_dict['name'] = db.collection('name').where(u'kid', u'==', False).document(temp_dict['name_ID']).get().to_dict()['name']
+    
+    superlikedAdult = len(temp_dict)
+
+    if 2*superlikedKid + likedKid > dislikedKid:
+        kid = True
+    else:
+        kid = False
+
+    if 2*superlikedAdult + likedAdult > dislikedAdult:
+        adult = True
+    else:
+        adult = False
+
+    gender = db.collection(u'settings').document(decoded["user_id"]).get().to_dict()['gender']
+    first_character = db.collection(u'settings').document(decoded["user_id"]).get().to_dict()['first_character']
+    last_character = db.collection(u'settings').document(decoded["user_id"]).get().to_dict()['last_character']
+    length_long = db.collection(u'settings').document(decoded["user_id"]).get().to_dict()['length_long']
+    length_medium = db.collection(u'settings').document(decoded["user_id"]).get().to_dict()['length_medium']
+    #length_short = db.collection(u'settings').document(decoded["user_id"]).get().to_dict()['length_short']
+    length_short = True
+    style_classic = db.collection(u'settings').document(decoded["user_id"]).get().to_dict()['style_classic']
+    style_modern = db.collection(u'settings').document(decoded["user_id"]).get().to_dict()['style_modern']
+    used_names = set()
+    
+    chance = random.randint(1,100)
+    if chance <=80:
+        if adult:
+            actions = db.collection(u'action').where(u'user_ID', u'==', decoded["user_id"]).where(u'kid', u'==', kid).stream()
+        else:
+            actions = db.collection(u'action').where(u'user_ID', u'==', decoded["user_id"]).where(u'kid', u'==', kid).stream()
+    else:
+        actions = db.collection(u'action').where(u'user_ID', u'==', decoded["user_id"]).stream()
+    for doc in actions:
+        used_names.add(doc.to_dict()['name_ID'])
+
+    names_stream = db.collection(u'name').stream()
+
+    names = set()
+    name_key = dict()
+
+    for doc in names_stream:
+        if(len(names) > 100): break
+        if doc.id not in used_names and doc.to_dict()['gender'] == gender:
+            if first_character != "":
+                if(doc.to_dict()['name'].startswith(first_character) == False):
+                    continue 
+            if last_character != "":
+                if(doc.to_dict()['name'].endswith(last_character) == False):
+                    continue
+            if length_short == False:
+                if(len(doc.to_dict()['name']) < 5):
+                    continue  
+            if length_medium == False:
+                if(len(doc.to_dict()['name']) < 7 and len(doc.to_dict()['name']) > 4):
+                    continue
+            if length_long == False:
+                if(len(doc.to_dict()['name']) > 6):
+                    continue
+            if style_classic == False:
+                if doc.to_dict()['kid'] == False:
+                    continue
+            if style_modern == False:
+                if doc.to_dict()['kid'] == True:
+                    continue
+            names.add(doc.to_dict()['name'])
+            name_key[doc.to_dict()['name']] = doc.id
+
+    if(len(list(names))>0):
+        name = random.choice(list(names))
+        return {'name_ID': name_key[name] , 'name': name}
+    else: return ""
