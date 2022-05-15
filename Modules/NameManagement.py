@@ -120,6 +120,10 @@ def purgeNameActions():
     return {'message': 'Success'}, 200
 
 @check_token
+def getStatistics():
+    return {'message': 'Not implemented'}, 400
+
+@check_token
 def suggestNameBasedOnOthers():
     db = firestore.client()
 
