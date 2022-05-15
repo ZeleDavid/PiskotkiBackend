@@ -76,7 +76,7 @@ def getNameActions():
     for doc in actions:
         temp_dict = doc.to_dict()
         temp_dict['name'] = db.collection('name').document(temp_dict['name_ID']).get().to_dict()['name']
-        return_actions.append(doc.to_dict())
+        return_actions.append(temp_dict)
 
     return {'data': return_actions}, 200
 
