@@ -46,7 +46,6 @@ def getsettings():
     db = firestore.client()
     #doc_ref = db.collection(u'settings').document(getUserID(get_token(request.headers['authorization'])))
     decoded = jwt.decode(get_token(request.headers['authorization']), options={"verify_signature": False})
-    print(decoded)
     doc_ref = db.collection(u'settings').document(decoded["user_id"])
 
     doc = doc_ref.get()
@@ -96,7 +95,8 @@ def setsettings():
 
         db = firestore.client()
 
-        doc_ref = db.collection(u'settings').document(getUserID(get_token(request.headers['authorization'])))
+        decoded = jwt.decode(get_token(request.headers['authorization']), options={"verify_signature": False})
+        doc_ref = db.collection(u'settings').document(decoded["user_id"])
         doc_ref.set(data)
 
         return {'message': 'succesfully saved user settings'}, 200
@@ -123,7 +123,6 @@ def signin():
     try:
         user = pb.auth().sign_in_with_email_and_password(email, password)
         jwt = user['idToken']
-        setUserID(jwt, user['localId'])
         return {'token': jwt}, 200
     except:
         return {'message': 'There was an error logging in'},400
