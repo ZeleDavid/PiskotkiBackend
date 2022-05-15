@@ -24,13 +24,13 @@ def returnNextName():
     return "Izpis naslednjega imena"
 
 @app.route('/getRandomName')
-def returnRandomName():
+def returnRandomName(request):
     with app.app_context():
         return NameManagement.getrandomname()
     return "Random name"
 
 @app.route('/suggestNameBasedOnOthers')
-def suggestNameBasedOnOthers():
+def suggestNameBasedOnOthers(request):
     with app.app_context():
         return NameManagement.suggestNameBasedOnOthers()
     return "Suggested name"
@@ -68,13 +68,13 @@ def userinfo():
     return "User info"
 
 @app.route('/settings', methods = ['GET'])
-def getsettings():
+def getsettings(request):
     with app.app_context():
         return UserManagement.getsettings()
     return "Settings"
 
 @app.route('/settings', methods = ['POST'])
-def settings():
+def settings(request):
     with app.app_context():
         return UserManagement.setsettings(request)
     return "Settings"
