@@ -215,7 +215,7 @@ def getPreferencesBasedOnHistory(decoded):
     temp_dict = []
     for doc in actions:
         temp_dict = doc.to_dict()
-        temp_dict['name'] = db.collection('name').document(temp_dict['name_ID']).where(u'kid', u'==', True).get().to_dict()['name']
+        temp_dict['name'] = db.collection('name').document(temp_dict['name_ID']).get().where(u'kid', u'==', True).to_dict()['name']
     
     likedKid = len(temp_dict)
 
@@ -224,7 +224,7 @@ def getPreferencesBasedOnHistory(decoded):
 
     for doc in actions:
         temp_dict = doc.to_dict()
-        temp_dict['name'] = db.collection('name').document(temp_dict['name_ID']).where(u'kid', u'==', True).get().to_dict()['name']
+        temp_dict['name'] = db.collection('name').document(temp_dict['name_ID']).get().where(u'kid', u'==', True).to_dict()['name']
     
     dislikedKid = len(temp_dict)
 
@@ -233,7 +233,7 @@ def getPreferencesBasedOnHistory(decoded):
 
     for doc in actions:
         temp_dict = doc.to_dict()
-        temp_dict['name'] = db.collection('name').document(temp_dict['name_ID']).where(u'kid', u'==', True).get().to_dict()['name']
+        temp_dict['name'] = db.collection('name').document(temp_dict['name_ID']).get().where(u'kid', u'==', True).to_dict()['name']
     
     superlikedKid = len(temp_dict)
 
@@ -242,7 +242,7 @@ def getPreferencesBasedOnHistory(decoded):
 
     for doc in actions:
         temp_dict = doc.to_dict()
-        temp_dict['name'] = db.collection('name').document(temp_dict['name_ID']).where(u'kid', u'==', False).get().to_dict()['name']
+        temp_dict['name'] = db.collection('name').document(temp_dict['name_ID']).get().where(u'kid', u'==', False).to_dict()['name']
     
     likedAdult = len(temp_dict)
 
@@ -251,7 +251,7 @@ def getPreferencesBasedOnHistory(decoded):
 
     for doc in actions:
         temp_dict = doc.to_dict()
-        temp_dict['name'] = db.collection('name').document(temp_dict['name_ID']).where(u'kid', u'==', False).get().to_dict()['name']
+        temp_dict['name'] = db.collection('name').document(temp_dict['name_ID']).get().where(u'kid', u'==', False).to_dict()['name']
     
     dislikedAdult = len(temp_dict)
 
@@ -260,7 +260,7 @@ def getPreferencesBasedOnHistory(decoded):
 
     for doc in actions:
         temp_dict = doc.to_dict()
-        temp_dict['name'] = db.collection('name').document(temp_dict['name_ID']).where(u'kid', u'==', False).get().to_dict()['name']
+        temp_dict['name'] = db.collection('name').document(temp_dict['name_ID']).get().where(u'kid', u'==', False).to_dict()['name']
     
     superlikedAdult = len(temp_dict)
 
