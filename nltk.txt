@@ -13,4 +13,4 @@ porter_test
 vader_lexicon
 treebank
 dependency_treebank
-omw-1.4
+omw
