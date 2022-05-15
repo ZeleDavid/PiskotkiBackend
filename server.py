@@ -16,9 +16,9 @@ def hello_world():
     return "<p>Hello, World!</p>"
 
 @app.route('/getNextName')
-def returnNextName():
+def returnNextName(request):
     with app.app_context():
-        managedData = Utils.getData()
+        managedData = Utils.getData(request)
         #TO DO: algoritem, ki ti vrne najprimernejše ime
         
     return "Izpis naslednjega imena"
@@ -26,13 +26,13 @@ def returnNextName():
 @app.route('/getRandomName')
 def returnRandomName(request):
     with app.app_context():
-        return NameManagement.getrandomname()
+        return NameManagement.getrandomname(request)
     return "Random name"
 
 @app.route('/suggestNameBasedOnOthers')
 def suggestNameBasedOnOthers(request):
     with app.app_context():
-        return NameManagement.suggestNameBasedOnOthers()
+        return NameManagement.suggestNameBasedOnOthers(request)
     return "Suggested name"
 
 @app.route('/nameAction', methods=['POST'])
@@ -70,7 +70,7 @@ def userinfo():
 @app.route('/settings', methods = ['GET'])
 def getsettings(request):
     with app.app_context():
-        return UserManagement.getsettings()
+        return UserManagement.getsettings(request)
     return "Settings"
 
 @app.route('/settings', methods = ['POST'])
