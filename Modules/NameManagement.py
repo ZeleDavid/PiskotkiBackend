@@ -10,6 +10,7 @@ from Modules.UserManagement import check_token, get_token
 from Modules.NameProcessing import getSimilarNames
 from Modules.NameProcessing import getNames
 import jwt
+import math
 
 pb = pyrebase.initialize_app(json.load(open('fbconfig.json')))
 
@@ -21,6 +22,7 @@ def getrandomname():
     used_names = set()
     print(get_token(request.headers['authorization']))
     decoded = jwt.decode(get_token(request.headers['authorization']), options={"verify_signature": False})
+
     actions = db.collection(u'action').where(u'user_ID', u'==', decoded["user_id"]).stream()
     for doc in actions:
         used_names.add(doc.to_dict()['name_ID'])
@@ -30,9 +32,11 @@ def getrandomname():
     names = set()
     name_key = dict()
 
+    gender = db.collection(u'settings').document(decoded["user_id"]).get().to_dict()["gender"]
+
     for doc in names_stream:
         if(len(names) > 100): break
-        if doc.id not in used_names:
+        if doc.id not in used_names and doc.to_dict()['gender'] == gender:
             names.add(doc.to_dict()['name'])
             name_key[doc.to_dict()['name']] = doc.id
     
@@ -87,12 +91,11 @@ def getNameActions():
 @check_token
 def deleteNameAction():
     try:
-        name = request.json.get('name')
-        action = request.json.get('action')
+        name = request.args.get('name');
     except:
         return {'message': 'Missing some arguments'}, 400
 
-    if name is None or action is None:
+    if name is None:
         return {'message': 'Missing some arguments'}, 400
     try:
         db = firestore.client()
@@ -115,6 +118,33 @@ def purgeNameActions():
         doc.reference.delete()
 
     return {'message': 'Success'}, 200
+
+@check_token
+def getStatistics():
+    try:
+        year = request.json.get('year')
+    except:
+        return {'message': 'Missing some arguments'}, 400
+
+    db = firestore.client()
+    
+    men = []
+    women = []
+
+    stream = db.collection('name_all').where(u'year', u'==', year).stream()
+
+    for doc in stream:
+        if not math.isnan(doc['count']):
+            if doc['gender']:
+                men.append([doc['name_ID'], doc['count']])
+            else:
+                women.append([doc['name_ID'], doc['count']])
+
+    men = reversed(men.sort(key = lambda x: x[1]))
+    women = reversed(women.sort(key = lambda x: x[1]))
+
+
+    return {'men': men, 'women': women}, 200
 
 @check_token
 def suggestNameBasedOnOthers():

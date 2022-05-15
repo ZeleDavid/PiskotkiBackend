@@ -59,6 +59,13 @@ def purgeNameAction():
         return NameManagement.purgeNameActions()
     return "Name action"
 
+@app.route('/statistics')
+def statistics():
+    with app.app_context():
+        return NameManagement.getStatistics()
+    return "Statistics"
+
+
 @app.route('/')
     
 @app.route('/userinfo')
