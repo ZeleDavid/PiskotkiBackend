@@ -1,13 +1,13 @@
 #import pandas as pd
 
-USER_ID = None
+USER_ID = dict()
 
-def setUserID(user_id):
+def setUserID(token, user_id):
     global USER_ID
-    USER_ID = user_id
+    USER_ID[token] = user_id
 
-def getUserID():
-    return USER_ID
+def getUserID(token):
+    return USER_ID[token]
 
 def getData():
     #TO DO: preberemo imena iz baze ali datoteke

@@ -6,7 +6,7 @@ from firebase_admin import credentials, auth, firestore
 from flask import Flask, request
 from functools import wraps
 import random
-from Modules.UserManagement import check_token
+from Modules.UserManagement import check_token, get_token
 from Modules.NameProcessing import getSimilarNames
 
 USER_ID = u'ASnc71OP5BhmP7c5dTOfthLLzo42'
@@ -16,11 +16,11 @@ pb = pyrebase.initialize_app(json.load(open('fbconfig.json')))
 
 
 @check_token
-def getrandomname():
+def getrandomname(request):
     db = firestore.client()
 
     used_names = set()
-    actions = db.collection(u'action').where(u'user_ID', u'==', getUserID()).stream()
+    actions = db.collection(u'action').where(u'user_ID', u'==', getUserID(get_token(request.headers['authorization']))).stream()
     for doc in actions:
         used_names.add(doc.to_dict()['name_ID'])
 
@@ -56,7 +56,7 @@ def postNameAction(request):
         db = firestore.client()
         doc_ref = db.collection(u'action').document()
         doc_ref.set({
-            u'user_ID': getUserID(),
+            u'user_ID': getUserID(get_token(request.headers['authorization'])),
             u'name_ID': name,
             u'action': action,
             u'timestamp': firestore.SERVER_TIMESTAMP
@@ -67,10 +67,10 @@ def postNameAction(request):
 
 
 @check_token
-def getNameActions():
+def getNameActions(request):
     db = firestore.client()
 
-    actions = db.collection(u'action').where(u'user_ID', u'==', getUserID()).stream()
+    actions = db.collection(u'action').where(u'user_ID', u'==', getUserID(get_token(request.headers['authorization']))).stream()
 
     return_actions = []
 
@@ -92,7 +92,7 @@ def deleteNameAction(request):
         return {'message': 'Missing some arguments'}, 400
     try:
         db = firestore.client()
-        doc_ref = db.collection(u'action').where(u'user_ID', u'==', getUserID()).where(u'name_ID', u'==', name).stream()
+        doc_ref = db.collection(u'action').where(u'user_ID', u'==', getUserID(get_token(request.headers['authorization']))).where(u'name_ID', u'==', name).stream()
         for doc in doc_ref:
             doc.reference.delete()
         return {'message': 'Success'}, 200
@@ -100,10 +100,10 @@ def deleteNameAction(request):
         return {'message': 'Something went wrong'}, 400
 
 @check_token
-def purgeNameActions():
+def purgeNameActions(request):
     db = firestore.client()
 
-    actions = db.collection(u'action').where(u'user_ID', u'==', getUserID()).stream()
+    actions = db.collection(u'action').where(u'user_ID', u'==', getUserID(get_token(request.headers['authorization']))).stream()
 
     for doc in actions:
         doc.reference.delete()
@@ -111,11 +111,11 @@ def purgeNameActions():
     return {'message': 'Success'}, 200
 
 @check_token
-def suggestNameBasedOnOthers():
+def suggestNameBasedOnOthers(request):
     db = firestore.client()
 
     used_names = set()
-    actions = db.collection(u'action').where(u'user_ID', u'==', getUserID()).stream()
+    actions = db.collection(u'action').where(u'user_ID', u'==', getUserID(get_token(request.headers['authorization']))).stream()
     for doc in actions:
         used_names.add(doc.to_dict()['name_ID'])
 
@@ -123,7 +123,7 @@ def suggestNameBasedOnOthers():
 
     names = set()
 
-    doc_ref = db.collection(u'settings').document(USER_ID)
+    doc_ref = db.collection(u'settings').document(getUserID(get_token(request.headers['authorization'])))
     docr = doc_ref.get()
     if docr.exists:
         docrr = docr.to_dict()

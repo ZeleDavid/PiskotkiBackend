@@ -41,9 +41,9 @@ def userinfo():
     return {'data': users}, 200
 
 @check_token
-def getsettings():
+def getsettings(request):
     db = firestore.client()
-    doc_ref = db.collection(u'settings').document(getUserID())
+    doc_ref = db.collection(u'settings').document(getUserID(get_token(request.headers['authorization'])))
     doc = doc_ref.get()
 
     if doc.exists:
@@ -91,7 +91,7 @@ def setsettings(request):
 
         db = firestore.client()
 
-        doc_ref = db.collection(u'settings').document(getUserID())
+        doc_ref = db.collection(u'settings').document(getUserID(get_token(request.headers['authorization'])))
         doc_ref.set(data)
 
         return {'message': 'succesfully saved user settings'}, 200
@@ -118,7 +118,7 @@ def signin(request):
     try:
         user = pb.auth().sign_in_with_email_and_password(email, password)
         jwt = user['idToken']
-        setUserID(user['localId'])
+        setUserID(jwt, user['localId'])
         return {'token': jwt}, 200
     except:
         return {'message': 'There was an error logging in'},400
