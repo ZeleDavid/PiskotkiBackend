@@ -72,6 +72,7 @@ def statistics():
 def userinfo():
     with app.app_context():
         return UserManagement.userinfo()
+        return UserManagement.userinfo()
     return "User info"
 
 @app.route('/settings', methods = ['GET'])

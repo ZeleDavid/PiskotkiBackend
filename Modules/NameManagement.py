@@ -122,7 +122,7 @@ def purgeNameActions():
 @check_token
 def getStatistics():
     try:
-        year = request.json.get('year')
+        year = request.args.get('year')
     except:
         return {'message': 'Missing some arguments'}, 400
 
@@ -136,13 +136,15 @@ def getStatistics():
     for doc in stream:
         data = []
 
-        name = db.collection('name').document(doc.id).get().to_dict()['name']
+        name = db.collection('name').document(doc.to_dict()['name_ID']).get().to_dict()['name']
 
         data.append(name)
-        data.append(doc.to_dict()['count'])
+        data.append(int(doc.to_dict()['count']))
 
         men.append(data)
 
+
+    men = list(reversed(sorted(men, key=lambda x: x[1])))
 
     return {'men': men, 'women': men}, 200
 
