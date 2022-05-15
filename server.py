@@ -44,7 +44,7 @@ def postNameAction():
     return "Name action"
 
 @app.route('/nameAction', methods=['GET'])
-def getNameAction():
+def getNameActions():
     with app.app_context():
         return NameManagement.getNameActions()
     return "Name action"
