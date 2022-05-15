@@ -91,7 +91,6 @@ def getNameActions():
 def deleteNameAction():
     try:
         name = request.json.get('name')
-        action = request.json.get('action')
     except:
         return {'message': 'Missing some arguments'}, 400
 
@@ -121,6 +120,22 @@ def purgeNameActions():
 
 @check_token
 def getStatistics():
+    try:
+        year = request.json.get('year')
+    except:
+        return {'message': 'Missing some arguments'}, 400
+
+    db = firestore.client()
+    
+    men = []
+    women = []
+
+    stream = db.collection('name_all').where(u'year', u'==', year).stream()
+
+    for doc in stream:
+        break
+
+
     return {'message': 'Not implemented'}, 400
 
 @check_token
